@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "BoxView Listener",
+  "version": "1.0",
+  "permissions": ["scripting", "activeTab"],
+  "host_permissions": ["https://www.csgoroll.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.csgoroll.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
