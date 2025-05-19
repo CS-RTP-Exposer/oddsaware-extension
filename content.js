@@ -11,7 +11,7 @@ document.addEventListener('click', async (event) => {
     await sleep(1000); // Wacht 1 seconde om te zorgen dat de DOM is geladen
 
     const wrapper = document.querySelector('.box-details-side-caption');
-    const cost = parseFloat(wrapper.querySelector('.currency-value').innerText);
+    const cost = parseFloat(wrapper.querySelector('.currency-value').innerText.replace(',', ''));
     const items = wrapper.querySelectorAll('.w-50');
 
     let totalRtp = 0;
@@ -51,7 +51,6 @@ document.addEventListener('click', async (event) => {
 
     // Voeg het RTP-element toe onder de afbeelding
     siblingElement.insertAdjacentElement('afterend', rtpElement);
-
 
   }
 });
