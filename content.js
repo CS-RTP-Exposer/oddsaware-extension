@@ -48,6 +48,8 @@ document.addEventListener('click', async (event) => {
     });
 
     const rtp = (totalRtp / cost) * 100;
+    totalPercentage = Math.round(totalPercentage);
+
     console.log('RTP:', rtp);
     console.log('Total percentage:', totalPercentage);
 
@@ -66,6 +68,7 @@ document.addEventListener('click', async (event) => {
 
     // Optionally display it in the DOM too:
     const doubleMoneyElement = document.createElement('div');
+    doubleMoneyElement.style.marginBottom = '8px';
     doubleMoneyElement.style.fontWeight = 'bold';
     doubleMoneyElement.style.color = doublePercentage >= 0.5 ? 'green' : 'red';
     doubleMoneyElement.innerText = `Chance to double: ${(doublePercentage * 100).toFixed(2)}%`;
