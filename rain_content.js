@@ -27,7 +27,9 @@ const selector = 'div.sc-f63de73e-0.fpLCpR.sc-8a2a066d-0.sc-966e8c9f-2.cLbUSF.js
 
             let totalRtp = 0;
             let totalPercentage = 0;
-            let doublePercentage = 0;
+            let profitPercentage = 0;
+            let avgReturn = 0;
+            let profitItems = [];
 
             items.forEach(item => {
 
@@ -38,21 +40,27 @@ const selector = 'div.sc-f63de73e-0.fpLCpR.sc-8a2a066d-0.sc-966e8c9f-2.cLbUSF.js
                 totalPercentage += percentage;
                 totalRtp += value * percentage;
 
-                if (value >= 2 * cost) {
-                    doublePercentage += percentage;
+                if (value >= cost) {
+                    profitPercentage += percentage;
+                    profitItems.push({ value, percentage });
                 }
 
             });
 
+            profitItems.forEach(item => {
+                avgReturn += item.value * ((item.percentage * 100 / profitPercentage) / 100);
+            });
+
             const rtp = (totalRtp / cost) * 100;
+            const avgProfit = (avgReturn - cost);
             totalPercentage = Math.round(totalPercentage);
 
             const siblingElement = wrapper.parentElement?.parentElement.querySelector('div');
             const existingRtp = siblingElement.querySelector('.custom-rtp');
-            const existingDouble = siblingElement.querySelector('.double-money');
+            const existingProfit = siblingElement.querySelector('.profit');
 
             if (existingRtp) existingRtp.remove();
-            if (existingDouble) existingDouble.remove();
+            if (existingProfit) existingProfit.remove();
 
             const rtpElement = document.createElement('div');
             rtpElement.className = 'custom-rtp';
@@ -62,15 +70,15 @@ const selector = 'div.sc-f63de73e-0.fpLCpR.sc-8a2a066d-0.sc-966e8c9f-2.cLbUSF.js
             rtpElement.style.color = totalPercentage !== 1 ? 'red' : rtp >= 100 ? 'green' : rtp >= 80 ? 'orange' : 'red';
             rtpElement.innerText = totalPercentage !== 1 ? `Total percentage is not 100%` : `RTP: ${rtp.toFixed(2)}%`;
 
-            const doubleMoneyElement = document.createElement('div');
-            doubleMoneyElement.className = 'double-money';
-            doubleMoneyElement.style.padding = '8px 0px 24px 24px';
-            doubleMoneyElement.style.fontWeight = 'bold';
-            doubleMoneyElement.style.display = 'block';
-            doubleMoneyElement.style.color = doublePercentage >= 0.5 ? 'green' : 'red';
-            doubleMoneyElement.innerText = `Chance to double: ${(doublePercentage * 100).toFixed(2)}%`;
+            const profitElement = document.createElement('div');
+            profitElement.className = 'profit';
+            profitElement.style.padding = '8px 0px 24px 24px';
+            profitElement.style.fontWeight = 'bold';
+            profitElement.style.display = 'block';
+            profitElement.style.color = profitPercentage >= 0.5 ? 'green' : 'red';
+            profitElement.innerText = `Chance at profit: ${(profitPercentage * 100).toFixed(2)}% (avg. profit of ${(avgProfit / cost).toFixed(2)}x)`;
 
-            siblingElement.insertAdjacentElement('afterend', doubleMoneyElement);
+            siblingElement.insertAdjacentElement('afterend', profitElement);
             siblingElement.insertAdjacentElement('afterend', rtpElement);
 
         }

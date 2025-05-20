@@ -25,7 +25,7 @@ document.addEventListener('click', async (event) => {
         let totalRtp = 0;
         let totalPercentage = 0;
         let profitPercentage = 0;
-        let avgProfit = 0;
+        let avgReturn = 0;
         let profitItems = [];
 
         items.forEach(item => {
@@ -45,12 +45,12 @@ document.addEventListener('click', async (event) => {
         });
 
         profitItems.forEach(item => {
-            avgProfit += item.value * ((item.percentage * 100 / profitPercentage) / 100);
+            avgReturn += item.value * ((item.percentage * 100 / profitPercentage) / 100);
         });
 
         const rtp = (totalRtp / cost) * 100;
+        const avgProfit = (avgReturn - cost);
         totalPercentage = Math.round(totalPercentage);
-        avgProfit = (avgProfit - cost);
 
         const siblingElement = wrapper.querySelector('img.align-self-center');
         const existingRtp = wrapper.querySelector('.custom-rtp');
