@@ -6,7 +6,6 @@ function sleep(ms) {
 document.addEventListener('click', async (event) => {
   const anchor = event.target.closest('a.img-container');
   if (anchor) {
-    console.log('Kist geklikt, klaar om response te vangen');
 
     let wrapper = document.querySelector('.box-details-side-caption');
     let cost = null;
@@ -27,16 +26,11 @@ document.addEventListener('click', async (event) => {
     let totalPercentage = 0;
     let doublePercentage = 0;
 
-    console.log('Cost:', cost);
-
     items.forEach(item => {
 
       const itemValues = item.innerText.split('\n');
       const percentage = parseFloat(itemValues[0].substring(0, itemValues[0].length - 1)) / 100;
       const value = parseFloat(itemValues[itemValues.length - 1].replace(',', ''));
-
-      console.log('Percentage:', percentage);
-      console.log('Value:', value);
 
       totalPercentage += percentage;
       totalRtp += value * percentage;
@@ -50,11 +44,7 @@ document.addEventListener('click', async (event) => {
     const rtp = (totalRtp / cost) * 100;
     totalPercentage = Math.round(totalPercentage);
 
-    console.log('RTP:', rtp);
-    console.log('Total percentage:', totalPercentage);
-
     const siblingElement = wrapper.querySelector('img.align-self-center');
-    
     const existingRtp = wrapper.querySelector('.custom-rtp');
     if (existingRtp) existingRtp.remove();
 
