@@ -64,6 +64,7 @@ const selector = 'div.sc-f63de73e-0.fpLCpR.sc-8a2a066d-0.sc-966e8c9f-2.cLbUSF.js
 
             const rtpElement = document.createElement('div');
             rtpElement.className = 'custom-rtp';
+            rtpElement.style.fontFamily = 'geogrotesqueWide';
             rtpElement.style.padding = '0px 24px';
             rtpElement.style.fontWeight = 'bold';
             rtpElement.style.display = 'block';
@@ -72,6 +73,7 @@ const selector = 'div.sc-f63de73e-0.fpLCpR.sc-8a2a066d-0.sc-966e8c9f-2.cLbUSF.js
 
             const profitElement = document.createElement('div');
             profitElement.className = 'profit';
+            profitElement.style.fontFamily = 'geogrotesqueWide';
             profitElement.style.padding = '8px 0px 24px 24px';
             profitElement.style.fontWeight = 'bold';
             profitElement.style.display = 'block';
