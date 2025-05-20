@@ -6,8 +6,12 @@
   "host_permissions": ["https://www.csgoroll.com/*", "https://rain.gg/*", "https://csgogem.com/*"],
   "content_scripts": [
     {
-      "matches": ["https://www.csgoroll.com/*"],
+      "matches": ["https://www.csgoroll.com/pvp/*"],
       "js": ["roll_content.js"]
+    },
+    {
+        "matches": ["https://www.csgoroll.com/boxes/*"],
+        "js": ["roll_solo_content.js"]
     },
     {
       "matches": ["https://rain.gg/*"],
