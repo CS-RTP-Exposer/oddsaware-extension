@@ -51,7 +51,6 @@ document.addEventListener('click', async (event) => {
         if (existingRtp) existingRtp.remove();
         if (existingDouble) existingDouble.remove();
 
-        // Maak RTP-weergave element
         const rtpElement = document.createElement('div');
         rtpElement.className = 'custom-rtp';
         rtpElement.style.marginTop = '8px';
@@ -59,7 +58,6 @@ document.addEventListener('click', async (event) => {
         rtpElement.style.color = totalPercentage !== 1 ? 'red' : rtp >= 100 ? 'green' : rtp >= 80 ? 'orange' : 'red';
         rtpElement.innerText = totalPercentage !== 1 ? `Total percentage is not 100%` : `RTP: ${rtp.toFixed(2)}%`;
 
-        // Optionally display it in the DOM too:
         const doubleMoneyElement = document.createElement('div');
         doubleMoneyElement.className = 'double-money';
         doubleMoneyElement.style.marginBottom = '8px';
@@ -67,7 +65,6 @@ document.addEventListener('click', async (event) => {
         doubleMoneyElement.style.color = doublePercentage >= 0.5 ? 'green' : 'red';
         doubleMoneyElement.innerText = `Chance to double: ${(doublePercentage * 100).toFixed(2)}%`;
 
-        // Voeg het RTP-element toe onder de afbeelding
         siblingElement.insertAdjacentElement('afterend', doubleMoneyElement);
         siblingElement.insertAdjacentElement('afterend', rtpElement);
 
