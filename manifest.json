@@ -3,11 +3,15 @@
   "name": "CS:GO Gambling RTP Exposer",
   "version": "1.0",
   "permissions": ["scripting", "activeTab"],
-  "host_permissions": ["https://www.csgoroll.com/*"],
+  "host_permissions": ["https://www.csgoroll.com/*", "https://rain.gg/*"],
   "content_scripts": [
     {
       "matches": ["https://www.csgoroll.com/*"],
-      "js": ["content.js"]
+      "js": ["roll_content.js"]
+    },
+    {
+      "matches": ["https://rain.gg/*"],
+      "js": ["rain_content.js"]
     }
   ]
 }
