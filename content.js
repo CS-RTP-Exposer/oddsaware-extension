@@ -7,15 +7,25 @@ document.addEventListener('click', async (event) => {
   const anchor = event.target.closest('a.img-container');
   if (anchor) {
     console.log('Kist geklikt, klaar om response te vangen');
-    
-    await sleep(1000); // Wacht 1 seconde om te zorgen dat de DOM is geladen
 
-    const wrapper = document.querySelector('.box-details-side-caption');
-    const cost = parseFloat(wrapper.querySelector('.currency-value').innerText.replace(',', ''));
-    const items = wrapper.querySelectorAll('.w-50');
+    let wrapper = document.querySelector('.box-details-side-caption');
+    let cost = null;
+    let items = null;
+
+    while(wrapper === null) {
+      wrapper = document.querySelector('.box-details-side-caption');
+      await sleep(10);
+    }
+
+    while(cost === null || items === null) {
+      cost = parseFloat(wrapper.querySelector('.currency-value').innerText.replace(',', ''));
+      items = wrapper.querySelectorAll('.w-50');
+      await sleep(10);
+    }
 
     let totalRtp = 0;
     let totalPercentage = 0;
+    let doublePercentage = 0;
 
     console.log('Cost:', cost);
 
@@ -30,6 +40,11 @@ document.addEventListener('click', async (event) => {
 
       totalPercentage += percentage;
       totalRtp += value * percentage;
+
+      if (value >= 2 * cost) {
+        doublePercentage += percentage;
+      }
+
     });
 
     const rtp = (totalRtp / cost) * 100;
@@ -49,7 +64,14 @@ document.addEventListener('click', async (event) => {
     rtpElement.style.color = totalPercentage !== 1 ? 'red' : rtp >= 100 ? 'green' : rtp >= 80 ? 'orange' : 'red';
     rtpElement.innerText = totalPercentage !== 1 ? `Total percentage is not 100%` : `RTP: ${rtp.toFixed(2)}%`;
 
+    // Optionally display it in the DOM too:
+    const doubleMoneyElement = document.createElement('div');
+    doubleMoneyElement.style.fontWeight = 'bold';
+    doubleMoneyElement.style.color = doublePercentage >= 0.5 ? 'green' : 'red';
+    doubleMoneyElement.innerText = `Chance to double: ${(doublePercentage * 100).toFixed(2)}%`;
+
     // Voeg het RTP-element toe onder de afbeelding
+    siblingElement.insertAdjacentElement('afterend', doubleMoneyElement);
     siblingElement.insertAdjacentElement('afterend', rtpElement);
 
   }
