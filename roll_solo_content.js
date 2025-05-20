@@ -15,6 +15,11 @@ document.addEventListener('click', async (event) => {
         const link = document.querySelector(`a[href="${url}"]`);
         
         if (link) link.click();
+
+        // Wait briefly for navigation, then scroll to top
+        setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100); // adjust delay as needed
     }
 });
 
