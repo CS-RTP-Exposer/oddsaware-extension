@@ -1,6 +1,6 @@
 (() => {
-    if (window.__MY_EXTENSION_LOADED__) return;
-    window.__MY_EXTENSION_LOADED__ = true;
+    if (window.__RAIN_SOLO_LOADED__) return;
+    window.__RAIN_SOLO_LOADED__ = true;
 
     if (!window.lastUrl) window.lastUrl = location.href;
 

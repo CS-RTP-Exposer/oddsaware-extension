@@ -3,11 +3,15 @@
     if (window.__GEM_SOLO_LOADED__) return;
     window.__GEM_SOLO_LOADED__ = true;
 
+    if (!window.lastUrl) window.lastUrl = location.href;
+
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     async function calculateRTP() {
+
+        if (document.querySelector('.custom-rtp') || document.querySelector('.profit')) return;
 
         let wrapper = document.querySelector('div.v-card.v-card--flat.v-theme--dark.v-card--border.bg-darkgrey800.border-darkgrey500.v-card--density-default.rounded-lg.v-card--variant-elevated.item-card.d-flex.flex-column.align-space-between');
         let cost = null;
@@ -91,4 +95,15 @@
 
     calculateRTP();
 
+    new MutationObserver(() => {
+        const currentUrl = location.href;
+        if (currentUrl !== window.lastUrl) {
+            window.lastUrl = currentUrl;
+            onUrlChange(currentUrl);
+        }
+    }).observe(document, { subtree: true, childList: true });
+
+    function onUrlChange(url) {
+        if (url.startsWith('https://csgogem.com/games/cases/')) calculateRTP();
+    }
 })();
