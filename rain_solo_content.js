@@ -1,75 +1,82 @@
-let lastUrl = location.href;
+(() => {
+    if (window.__MY_EXTENSION_LOADED__) return;
+    window.__MY_EXTENSION_LOADED__ = true;
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+    if (!window.lastUrl) window.lastUrl = location.href;
 
-async function removeElements() {
-    let targetDiv = document.querySelector('main > div > div.sc-f63de73e-0.dNqLFf');
-
-    while (targetDiv === null) {
-        targetDiv = document.querySelector('main > div > div.sc-f63de73e-0.dNqLFf');
-        await sleep(10);
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    const observer = new MutationObserver((mutationsList) => {
-    for (const mutation of mutationsList) {
-        if (mutation.type === 'childList' || mutation.type === 'characterData') {
-            let elemsToRemove = document.querySelectorAll('div.sc-f63de73e-0.fpLCpR.sc-8a2a066d-0.sc-d9f8ad01-3.cLbUSF.eqGvSG > svg');
-            elemsToRemove.forEach(elem => elem.remove());
+    async function removeElements() {
+        let targetDiv = document.querySelector('main > div > div.sc-f63de73e-0.dNqLFf');
+
+        while (targetDiv === null) {
+            targetDiv = document.querySelector('main > div > div.sc-f63de73e-0.dNqLFf');
+            await sleep(10);
         }
-    }
-    });
 
-    observer.observe(targetDiv, {
-        childList: true
-    });
-}
+        const observer = new MutationObserver((mutationsList) => {
+            for (const mutation of mutationsList) {
+                if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                    let elemsToRemove = document.querySelectorAll('div.sc-f63de73e-0.fpLCpR.sc-8a2a066d-0.sc-d9f8ad01-3.cLbUSF.eqGvSG > svg');
+                    elemsToRemove.forEach(elem => elem.remove());
+                }
+            }
+        });
 
-async function calculateRTP() {
-    let wrapper = document.querySelector('div.sc-f63de73e-0.bILPKE');
-    let cost = null;
-    let items = null;
-
-    while (wrapper === null) {
-        wrapper = document.querySelector('div.sc-f63de73e-0.bILPKE');
-        await sleep(10);
+        observer.observe(targetDiv, {
+            childList: true
+        });
     }
 
-    while (cost === null || items === null || items.length === 0) {
-        cost = document.querySelector('div.sc-b69e8a97-0.cKiNwf');
-        items = wrapper.querySelectorAll('div.sc-f63de73e-0.bILPKE > div.sc-78e8d11f-0');
-        await sleep(10);
-    }
+    async function calculateRTP() {
 
-    cost = parseFloat(cost.innerText);
-    
-    let totalRtp = 0;
-    let totalPercentage = 0;
-    let profitPercentage = 0;
-    let avgReturn = 0;
-    let profitItems = [];
+        if (document.querySelector('.custom-rtp') || document.querySelector('.profit')) return;
 
-    items.forEach(item => {
-        const itemValues = item.innerText.split('\n');
-        const percentage = parseFloat(itemValues[0].substring(0, itemValues[0].length - 1)) / 100;
-        const value = parseFloat(itemValues[itemValues.length - 1].replace(',', ''));
+        let wrapper = document.querySelector('div.sc-f63de73e-0.bILPKE');
+        let cost = null;
+        let items = null;
 
-        totalPercentage += percentage;
-        totalRtp += value * percentage;
-
-        if (value >= cost) {
-            profitPercentage += percentage;
-            profitItems.push({ value, percentage });
+        while (wrapper === null) {
+            wrapper = document.querySelector('div.sc-f63de73e-0.bILPKE');
+            await sleep(10);
         }
-    });
 
-    profitItems.forEach(item => {
-        avgReturn += item.value * ((item.percentage * 100 / profitPercentage) / 100);
-    });
+        while (cost === null || items === null || items.length === 0) {
+            cost = document.querySelector('div.sc-b69e8a97-0.cKiNwf');
+            items = wrapper.querySelectorAll('div.sc-f63de73e-0.bILPKE > div.sc-78e8d11f-0');
+            await sleep(10);
+        }
 
-    const rtp = (totalRtp / cost) * 100;
-    const avgProfit = (avgReturn - cost);
+        cost = parseFloat(cost.innerText);
+
+        let totalRtp = 0;
+        let totalPercentage = 0;
+        let profitPercentage = 0;
+        let avgReturn = 0;
+        let profitItems = [];
+
+        items.forEach(item => {
+            const itemValues = item.innerText.split('\n');
+            const percentage = parseFloat(itemValues[0].substring(0, itemValues[0].length - 1)) / 100;
+            const value = parseFloat(itemValues[itemValues.length - 1].replace(',', ''));
+
+            totalPercentage += percentage;
+            totalRtp += value * percentage;
+
+            if (value >= cost) {
+                profitPercentage += percentage;
+                profitItems.push({ value, percentage });
+            }
+        });
+
+        profitItems.forEach(item => {
+            avgReturn += item.value * ((item.percentage * 100 / profitPercentage) / 100);
+        });
+
+        const rtp = (totalRtp / cost) * 100;
+        const avgProfit = (avgReturn - cost);
         totalPercentage = Math.round(totalPercentage);
 
         const siblingElement = document.querySelector('div.sc-853883c2-0.fsxdNL');
@@ -95,26 +102,26 @@ async function calculateRTP() {
 
         siblingElement.insertAdjacentElement('afterend', profitElement);
         siblingElement.insertAdjacentElement('afterend', rtpElement);
-}
-
-if (window.location.href === 'https://rain.gg/games/case-opening') {
-    removeElements();
-}
-
-if (window.location.href.startsWith('https://rain.gg/games/case-opening/')) {
-    calculateRTP();
-}
-
-new MutationObserver(() => {
-    const currentUrl = location.href;
-    if (currentUrl !== lastUrl) {
-        lastUrl = currentUrl;
-        onUrlChange(currentUrl);
     }
-}).observe(document, { subtree: true, childList: true });
 
-function onUrlChange(url) {
-    if (url === 'https://rain.gg/games/case-opening') removeElements();
-    if (url.startsWith('https://rain.gg/games/case-opening/')) calculateRTP();
+    if (window.location.href === 'https://rain.gg/games/case-opening') {
+        removeElements();
+    }
 
-}
+    if (window.location.href.startsWith('https://rain.gg/games/case-opening/')) {
+        calculateRTP();
+    }
+
+    new MutationObserver(() => {
+        const currentUrl = location.href;
+        if (currentUrl !== window.lastUrl) {
+            window.lastUrl = currentUrl;
+            onUrlChange(currentUrl);
+        }
+    }).observe(document, { subtree: true, childList: true });
+
+    function onUrlChange(url) {
+        if (url === 'https://rain.gg/games/case-opening') removeElements();
+        if (url.startsWith('https://rain.gg/games/case-opening/')) calculateRTP();
+    }
+})();

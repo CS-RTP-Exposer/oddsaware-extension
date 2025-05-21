@@ -1,52 +1,57 @@
-let lastUrl = location.href;
+(() => {
+    if (window.__CSGOROLL_EXTENSION_LOADED__) return;
+    window.__CSGOROLL_EXTENSION_LOADED__ = true;
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+    if (!window.lastUrl) window.lastUrl = location.href;
 
-document.addEventListener('click', async (event) => {
-    const anchor = event.target.closest('button.open-btn');
-
-    if (anchor && anchor.innerText.toLowerCase() === 'open case') {
-        const wrapper = anchor.parentElement;
-        const slug = wrapper.innerText.split('\n')[0].replace(' ', '-').toLowerCase();
-
-        const url = `/boxes/view/world/${slug}`;
-        const link = document.querySelector(`a[href="${url}"]`);
-        
-        if (link) link.click();
-
-        // Wait briefly for navigation, then scroll to top
-        setTimeout(() => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 100); // adjust delay as needed
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
-});
 
-new MutationObserver(() => {
-    const currentUrl = location.href;
-    if (currentUrl !== lastUrl) {
-        lastUrl = currentUrl;
-        onUrlChange(currentUrl);
+    document.addEventListener('click', async (event) => {
+        const anchor = event.target.closest('button.open-btn');
+
+        if (anchor && anchor.innerText.toLowerCase() === 'open case') {
+            const wrapper = anchor.parentElement;
+            const slug = wrapper.innerText.split('\n')[0].replace(' ', '-').toLowerCase();
+
+            const url = `/boxes/view/world/${slug}`;
+            const link = document.querySelector(`a[href="${url}"]`);
+
+            if (link) link.click();
+
+            setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 100);
+        }
+    });
+
+    new MutationObserver(() => {
+        const currentUrl = location.href;
+        if (currentUrl !== window.lastUrl) {
+            window.lastUrl = currentUrl;
+            onUrlChange(currentUrl);
+        }
+    }).observe(document, { subtree: true, childList: true });
+
+    function onUrlChange(url) {
+        console.log('URL changed to:', url);
+        if (url.startsWith('https://www.csgoroll.com/boxes/view/')) {
+            calculateRTP();
+        }
     }
-}).observe(document, { subtree: true, childList: true });
 
-function onUrlChange(url) {
-    console.log('URL changed to:', url);
-    if (url.startsWith('https://www.csgoroll.com/boxes/view/')) {
-        calculateRTP();
-    }
-}
+    window.addEventListener('load', () => {
+        if (window.location.href.startsWith('https://www.csgoroll.com/boxes/view/')) {
+            calculateRTP();
+        }
+    });
 
-window.addEventListener('load', () => {
-    if (window.location.href.startsWith('https://www.csgoroll.com/boxes/view/')) {
-        calculateRTP();
-    }
-});
+    async function calculateRTP() {
 
-const calculateRTP = async () => {
+        if (document.querySelector('.custom-rtp') || document.querySelector('.profit')) return;
+        if (!window.location.href.startsWith('https://www.csgoroll.com/boxes/view/')) return;
 
-    if (window.location.href.startsWith('https://www.csgoroll.com/boxes/view/')) {
         let wrapper = document.querySelector('section.gap-05.grid');
         let cost = null;
         let items = null;
@@ -71,7 +76,6 @@ const calculateRTP = async () => {
         let profitItems = [];
 
         items.forEach(item => {
-
             const itemValues = item.innerText.split('\n');
             let percentage = item.parentElement.querySelector('.rate.visible').innerText;
             percentage = parseFloat(percentage.substring(0, percentage.length - 1)) / 100;
@@ -84,7 +88,6 @@ const calculateRTP = async () => {
                 profitPercentage += percentage;
                 profitItems.push({ value, percentage });
             }
-
         });
 
         profitItems.forEach(item => {
@@ -107,7 +110,9 @@ const calculateRTP = async () => {
         rtpElement.style.marginTop = '8px';
         rtpElement.style.fontWeight = 'bold';
         rtpElement.style.color = totalPercentage !== 1 ? 'red' : rtp >= 100 ? 'green' : rtp >= 80 ? 'orange' : 'red';
-        rtpElement.innerText = totalPercentage !== 1 ? `Total percentage is not 100%` : `RTP: ${rtp.toFixed(2)}%`;
+        rtpElement.innerText = totalPercentage !== 1
+            ? `Total percentage is not 100%`
+            : `RTP: ${rtp.toFixed(2)}%`;
 
         const profitElement = document.createElement('div');
         profitElement.className = 'profit';
@@ -118,7 +123,5 @@ const calculateRTP = async () => {
 
         siblingElement.insertAdjacentElement('afterend', profitElement);
         siblingElement.insertAdjacentElement('afterend', rtpElement);
-
     }
-
-};
+})();
