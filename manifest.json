@@ -2,17 +2,20 @@
   "manifest_version": 3,
   "name": "CS:GO Gambling RTP Exposer",
   "version": "1.0",
-  "permissions": ["scripting", "activeTab"],
-  "host_permissions": ["https://www.csgoroll.com/*", "https://rain.gg/*", "https://csgogem.com/*"],
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "https://www.csgoroll.com/*",
+    "https://rain.gg/*",
+    "https://csgogem.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
-    {
-      "matches": ["https://www.csgoroll.com/pvp/*"],
-      "js": ["roll_content.js"]
-    },
-    {
-        "matches": ["https://www.csgoroll.com/boxes/*"],
-        "js": ["roll_solo_content.js"]
-    },
     {
       "matches": ["https://rain.gg/*"],
       "js": ["rain_content.js"]
