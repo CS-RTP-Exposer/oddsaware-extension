@@ -17,10 +17,6 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://rain.gg/*"],
-      "js": ["rain_content.js"]
-    },
-    {
       "matches": ["https://csgogem.com/*"],
       "js": ["gem_content.js"]
     }
