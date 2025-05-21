@@ -14,11 +14,5 @@
   ],
   "background": {
     "service_worker": "background.js"
-  },
-  "content_scripts": [
-    {
-      "matches": ["https://csgogem.com/*"],
-      "js": ["gem_content.js"]
-    }
-  ]
+  }
 }

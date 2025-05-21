@@ -3,6 +3,8 @@ const urlScriptMap = {
   "csgoroll.com/boxes/": "roll_solo_content.js",
   "rain.gg/games/case-battles": "rain_content.js",
   "rain.gg/games/case-opening": "rain_solo_content.js",
+  "https://csgogem.com/games/battles/": "gem_content.js",
+  "https://csgogem.com/games/cases/": "gem_solo_content.js"
 };
 
 chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
