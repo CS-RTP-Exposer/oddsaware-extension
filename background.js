@@ -1,54 +1,46 @@
-//TODO : When urls array grows, figure out a better way to handle this
-
-const injected = [];
-const urls = [
-    "csgoroll.com/pvp/*",
-    "csgoroll.com/boxes/*",
-    "rain.gg/games/case-battles",
-    "rain.gg/games/case-opening",
+const scriptMapping = [
+  { match: "csgoroll.com/pvp/", script: "roll_content.js" },
+  { match: "csgoroll.com/boxes/", script: "roll_solo_content.js" },
+  { match: "rain.gg/games/case-battles", script: "rain_content.js" },
+  { match: "rain.gg/games/case-opening", script: "rain_solo_content.js" }
 ];
 
-chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
-    const url = details.url;
-    let index = null;
+// Tracks what has been injected per tab
+const injectedTabs = {};
 
-    for (let i = 0; i < urls.length; i++) {
-        index = url.includes(urls[i]) ? i : index;
-        if (index !== null) break;
+function injectIfNeeded(details) {
+  const url = details.url;
+  const tabId = details.tabId;
+
+  for (const { match, script } of scriptMapping) {
+    if (url.includes(match)) {
+      const tabKey = `${tabId}-${match}`;
+
+      if (injectedTabs[tabKey]) return;
+
+      chrome.scripting.executeScript({
+        target: { tabId },
+        files: [script]
+      }, () => {
+        if (chrome.runtime.lastError) {
+          console.error('Script injection failed:', chrome.runtime.lastError.message);
+        } else {
+          injectedTabs[tabKey] = true;
+          console.log(`✅ Injected ${script} into tab ${tabId}`);
+        }
+      });
+
+      break;
     }
+  }
+}
 
-    if (injected.includes(urls[index])) return;
+// Handles SPA route changes
+chrome.webNavigation.onHistoryStateUpdated.addListener(injectIfNeeded, {
+  url: scriptMapping.map(({ match }) => ({ urlContains: match }))
+});
 
-    switch(index) {
-        case 0:
-            injected.push(urls[index]);
-            chrome.scripting.executeScript({
-                target: { tabId: details.tabId },
-                files: ["roll_content.js"]
-            });
-            break;
-        case 1:
-            injected.push(urls[index]);
-            chrome.scripting.executeScript({
-                target: { tabId: details.tabId },
-                files: ["roll_solo_content.js"]
-            });
-            break;
-        case 2:
-            injected.push(urls[index]);
-            chrome.scripting.executeScript({
-                target: { tabId: details.tabId },
-                files: ["rain_content.js"]
-            });
-            break;
-        case 3:
-            injected.push(urls[index]);
-            chrome.scripting.executeScript({
-                target: { tabId: details.tabId },
-                files: ["rain_solo_content.js"]
-            });
-            break;
-        default:
-            break;
-    }
+// Handles full page loads or reloads
+chrome.webNavigation.onCompleted.addListener(injectIfNeeded, {
+  url: scriptMapping.map(({ match }) => ({ urlContains: match }))
 });
