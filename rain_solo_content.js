@@ -76,7 +76,6 @@
         });
 
         const rtp = (totalRtp / cost) * 100;
-        const avgProfit = (avgReturn - cost);
         totalPercentage = Math.round(totalPercentage);
 
         const siblingElement = document.querySelector('div.sc-853883c2-0.fsxdNL');
@@ -98,7 +97,7 @@
         profitElement.style.marginBottom = '16px';
         profitElement.style.fontWeight = 'bold';
         profitElement.style.color = profitPercentage >= 0.5 ? 'green' : 'red';
-        profitElement.innerText = `Chance at profit: ${(profitPercentage * 100).toFixed(2)}% (avg. profit of ${(avgProfit / cost).toFixed(2)}x)`;
+        profitElement.innerText = `Chance at profit: ${(profitPercentage * 100).toFixed(2)}% (avg. profit of ${(avgReturn / cost).toFixed(2)}x)`;
 
         siblingElement.insertAdjacentElement('afterend', profitElement);
         siblingElement.insertAdjacentElement('afterend', rtpElement);

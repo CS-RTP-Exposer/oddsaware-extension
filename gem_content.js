@@ -53,7 +53,6 @@ document.addEventListener("contextmenu", async (event) => {
         });
 
         const rtp = (totalRtp / cost) * 100;
-        const avgProfit = (avgReturn - cost);
         totalPercentage = Math.round(totalPercentage);
 
         const siblingElement = wrapper.parentElement?.parentElement.parentElement.parentElement.parentElement.parentElement.querySelector('.v-card-title');
@@ -77,7 +76,7 @@ document.addEventListener("contextmenu", async (event) => {
         profitElement.style.fontWeight = 'bold';
         profitElement.style.display = 'block';
         profitElement.style.color = profitPercentage >= 0.5 ? 'green' : 'red';
-        profitElement.innerText = `Chance at profit: ${(profitPercentage * 100).toFixed(2)}% (avg. profit of ${(avgProfit / cost).toFixed(2)}x)`;
+        profitElement.innerText = `Chance at profit: ${(profitPercentage * 100).toFixed(2)}% (avg. profit of ${(avgReturn / cost).toFixed(2)}x)`;
 
         siblingElement.insertAdjacentElement('afterend', profitElement);
         siblingElement.insertAdjacentElement('afterend', rtpElement);

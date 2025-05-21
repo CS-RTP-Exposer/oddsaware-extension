@@ -52,7 +52,6 @@ const selector = 'div.sc-f63de73e-0.fpLCpR.sc-8a2a066d-0.sc-966e8c9f-2.cLbUSF.js
             });
 
             const rtp = (totalRtp / cost) * 100;
-            const avgProfit = (avgReturn - cost);
             totalPercentage = Math.round(totalPercentage);
 
             const siblingElement = wrapper.parentElement?.parentElement.querySelector('div');
@@ -78,7 +77,7 @@ const selector = 'div.sc-f63de73e-0.fpLCpR.sc-8a2a066d-0.sc-966e8c9f-2.cLbUSF.js
             profitElement.style.fontWeight = 'bold';
             profitElement.style.display = 'block';
             profitElement.style.color = profitPercentage >= 0.5 ? 'green' : 'red';
-            profitElement.innerText = `Chance at profit: ${(profitPercentage * 100).toFixed(2)}% (avg. profit of ${(avgProfit / cost).toFixed(2)}x)`;
+            profitElement.innerText = `Chance at profit: ${(profitPercentage * 100).toFixed(2)}% (avg. profit of ${(avgReturn / cost).toFixed(2)}x)`;
 
             siblingElement.insertAdjacentElement('afterend', profitElement);
             siblingElement.insertAdjacentElement('afterend', rtpElement);
