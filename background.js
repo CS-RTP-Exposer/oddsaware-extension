@@ -14,7 +14,7 @@ chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
     if (url.includes(urlPattern)) {
       chrome.scripting.executeScript({
         target: { tabId: details.tabId },
-        files: [scriptFile],
+        files: ['utils.js',scriptFile],
       });
       break; // Stop checking after first match
     }

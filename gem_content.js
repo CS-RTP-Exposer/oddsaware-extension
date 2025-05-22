@@ -6,54 +6,37 @@ document.addEventListener("contextmenu", async (event) => {
     const anchor = event.target.closest('.case-item');
     if (anchor) {
 
+        if (document.querySelector('.custom-rtp') || document.querySelector('.profit')) return;
+
         const cost = parseFloat(anchor.innerText.split('\n')[1].replace(',', ''));
 
         let wrapper = document.querySelector('.item-list');
-        let items = null;
+        let itemElems = null;
 
         while (wrapper === null) {
             wrapper = document.querySelector('.item-list');
             await sleep(10);
         }
 
-        while (items === null) {
-            items = wrapper.querySelectorAll('.v-card');
+        while (itemElems === null) {
+            itemElems = wrapper.querySelectorAll('.v-card');
             await sleep(10);
         }
 
-        let totalRtp = 0;
-        let totalPercentage = 0;
-        let profitPercentage = 0;
-        let avgReturn = 0;
-        let profitItems = [];
+        let items = [];
 
-        items.forEach(item => {
+        itemElems.forEach(item => {
 
             const itemValues = item.innerText.split('\n');
-
             const percentageIndex = itemValues[0].includes('%') ? 0 : 1;
-
             const percentage = parseFloat(itemValues[percentageIndex].substring(0, itemValues[percentageIndex].length - 1)) / 100;
             const value = parseFloat(itemValues[itemValues.length - 1].replaceAll(',', ''));
 
-            totalPercentage += percentage;
-            totalRtp += value * percentage;
-
-            console.log(value, percentage);
-
-            if (value >= cost) {
-                profitPercentage += percentage;
-                profitItems.push({ value, percentage });
-            }
+            items.push({ value, percentage });
 
         });
 
-        profitItems.forEach(item => {
-            avgReturn += item.value * ((item.percentage * 100 / profitPercentage) / 100);
-        });
-
-        const rtp = (totalRtp / cost) * 100;
-        totalPercentage = Math.round(totalPercentage);
+        const { rtp, totalPercentage, profitPercentage, avgReturn } = calculateRTP(cost, items);
 
         const siblingElement = wrapper.parentElement?.parentElement.parentElement.parentElement.parentElement.parentElement.querySelector('.v-card-title');
         const existingRtp = siblingElement.querySelector('.custom-rtp');
