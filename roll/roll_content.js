@@ -16,7 +16,7 @@
                 await window.sleep(10);
             }
 
-            while (cost === null || items === null) {
+            while (cost === null || itemElems === null) {
                 cost = parseFloat(wrapper.querySelector('.currency-value').innerText.replace(',', ''));
                 itemElems = wrapper.querySelectorAll('.w-50');
                 await window.sleep(10);
