@@ -1,10 +1,10 @@
 const urlScriptMap = {
-    "csgoroll.com/pvp/": "roll_content.js",
-    "csgoroll.com/boxes/": "roll_solo_content.js",
-    "rain.gg/games/case-battles": "rain_content.js",
-    "rain.gg/games/case-opening": "rain_solo_content.js",
-    "https://csgogem.com/games/battles/": "gem_content.js",
-    "https://csgogem.com/games/cases/": "gem_solo_content.js"
+    "csgoroll.com/pvp/": "roll/roll_content.js",
+    "csgoroll.com/boxes/": "roll/roll_solo_content.js",
+    "rain.gg/games/case-battles": "rain/rain_content.js",
+    "rain.gg/games/case-opening": "rain/rain_solo_content.js",
+    "https://csgogem.com/games/battles/": "gem/gem_content.js",
+    "https://csgogem.com/games/cases/": "gem/gem_solo_content.js"
 };
 
 chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
