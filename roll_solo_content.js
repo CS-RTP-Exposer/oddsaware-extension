@@ -1,7 +1,7 @@
 (() => {
 
-    if (window.__CSGOROLL_EXTENSION_LOADED__) return;
-    window.__CSGOROLL_EXTENSION_LOADED__ = true;
+    if (window.__CSGOROLL_SOLO_LOADED__) return;
+    window.__CSGOROLL_SOLO_LOADED__ = true;
 
     if (!window.lastUrl) window.lastUrl = location.href;
 
