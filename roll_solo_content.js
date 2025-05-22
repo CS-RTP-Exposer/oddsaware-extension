@@ -1,12 +1,9 @@
 (() => {
+
     if (window.__CSGOROLL_EXTENSION_LOADED__) return;
     window.__CSGOROLL_EXTENSION_LOADED__ = true;
 
     if (!window.lastUrl) window.lastUrl = location.href;
-
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
 
     document.addEventListener('click', async (event) => {
         const anchor = event.target.closest('button.open-btn');
@@ -54,49 +51,32 @@
 
         let wrapper = document.querySelector('section.gap-05.grid');
         let cost = null;
-        let items = null;
+        let itemElems = null;
 
         while (wrapper === null) {
             wrapper = document.querySelector('section.gap-05.grid');
-            await sleep(10);
+            await window.sleep(10);
         }
 
-        while (cost === null || items === null || items.length === 0) {
+        while (cost === null || itemElems === null || itemElems.length === 0) {
             cost = document.querySelector('button.mat-focus-indicator.mat-raised-button.mat-button-base.mat-button-3d.open-btn.mat-accent.ng-star-inserted');
-            items = wrapper.querySelectorAll('cw-item');
-            await sleep(10);
+            itemElems = wrapper.querySelectorAll('cw-item');
+            await window.sleep(10);
         }
 
         cost = parseFloat(cost.innerText.split('\n')[1].replace(',', ''));
 
-        let totalRtp = 0;
-        let totalPercentage = 0;
-        let profitPercentage = 0;
-        let avgReturn = 0;
-        let profitItems = [];
-
-        items.forEach(item => {
+        let items = [];
+        itemElems.forEach(item => {
             const itemValues = item.innerText.split('\n');
             let percentage = item.parentElement.querySelector('.rate.visible').innerText;
             percentage = parseFloat(percentage.substring(0, percentage.length - 1)) / 100;
             const value = parseFloat(itemValues[itemValues.length - 1].replace(',', ''));
 
-            totalPercentage += percentage;
-            totalRtp += value * percentage;
-
-            if (value >= cost) {
-                profitPercentage += percentage;
-                console.log(profitPercentage);
-                profitItems.push({ value, percentage });
-            }
+            items.push({ value, percentage });
         });
 
-        profitItems.forEach(item => {
-            avgReturn += item.value * ((item.percentage * 100 / profitPercentage) / 100);
-        });
-
-        const rtp = (totalRtp / cost) * 100;
-        totalPercentage = Math.round(totalPercentage);
+        const { rtp, totalPercentage, profitPercentage, avgReturn } = window.calculateRTP(cost, items);
 
         const siblingElement = document.querySelector('h4').parentElement;
         const existingRtp = wrapper.querySelector('.custom-rtp');

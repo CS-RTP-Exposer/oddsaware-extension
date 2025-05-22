@@ -1,19 +1,16 @@
 (() => {
+
     if (window.__RAIN_SOLO_LOADED__) return;
     window.__RAIN_SOLO_LOADED__ = true;
 
     if (!window.lastUrl) window.lastUrl = location.href;
-
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
 
     async function removeElements() {
         let targetDiv = document.querySelector('main > div > div.sc-f63de73e-0.dNqLFf');
 
         while (targetDiv === null) {
             targetDiv = document.querySelector('main > div > div.sc-f63de73e-0.dNqLFf');
-            await sleep(10);
+            await window.sleep(10);
         }
 
         const observer = new MutationObserver((mutationsList) => {
@@ -36,54 +33,38 @@
 
         let wrapper = document.querySelector('div.sc-f63de73e-0.bILPKE');
         let cost = null;
-        let items = null;
+        let itemElems = null;
 
         while (wrapper === null) {
             wrapper = document.querySelector('div.sc-f63de73e-0.bILPKE');
-            await sleep(10);
+            await window.sleep(10);
         }
 
-        while (cost === null || items === null || items.length === 0) {
+        while (cost === null || itemElems === null || itemElems.length === 0) {
             cost = document.querySelector('div.sc-b69e8a97-0.cKiNwf');
-            items = wrapper.querySelectorAll('div.sc-f63de73e-0.bILPKE > div.sc-78e8d11f-0');
-            await sleep(10);
+            itemElems = wrapper.querySelectorAll('div.sc-f63de73e-0.bILPKE > div.sc-78e8d11f-0');
+            await window.sleep(10);
         }
 
         cost = parseFloat(cost.innerText);
 
-        let totalRtp = 0;
-        let totalPercentage = 0;
-        let profitPercentage = 0;
-        let avgReturn = 0;
-        let profitItems = [];
-
-        items.forEach(item => {
+        let items = [];
+        itemElems.forEach(item => {
             const itemValues = item.innerText.split('\n');
             const percentage = parseFloat(itemValues[0].substring(0, itemValues[0].length - 1)) / 100;
             const value = parseFloat(itemValues[itemValues.length - 1].replace(',', ''));
 
-            totalPercentage += percentage;
-            totalRtp += value * percentage;
-
-            if (value >= cost) {
-                profitPercentage += percentage;
-                profitItems.push({ value, percentage });
-            }
+            items.push({ value, percentage });
         });
 
-        profitItems.forEach(item => {
-            avgReturn += item.value * ((item.percentage * 100 / profitPercentage) / 100);
-        });
-
-        const rtp = (totalRtp / cost) * 100;
-        totalPercentage = Math.round(totalPercentage);
+        const { rtp, totalPercentage, profitPercentage, avgReturn } = window.calculateRTP(cost, items);
 
         const siblingElement = document.querySelector('div.sc-853883c2-0.fsxdNL');
-        const existingRtp = wrapper.querySelector('.custom-rtp');
-        const existingProfit = wrapper.querySelector('.profit');
+        const existingRtp = wrapper.querySelectorAll('.custom-rtp');
+        const existingProfit = wrapper.querySelectorAll('.profit');
 
-        if (existingRtp) existingRtp.remove();
-        if (existingProfit) existingProfit.remove();
+        existingRtp.forEach(el => el.remove());
+        existingProfit.forEach(el => el.remove());
 
         const rtpElement = document.createElement('div');
         rtpElement.className = 'custom-rtp';
