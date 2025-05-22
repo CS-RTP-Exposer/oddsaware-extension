@@ -1,56 +1,63 @@
-window.sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+(() => {
 
-window.calculateRTP = (cost, items) => {
+    if (window.__UTILS_LOADED__) return;
+    window.__UTILS_LOADED__ = true;
 
-    let totalRtp = 0;
-    let totalPercentage = 0;
-    let profitPercentage = 0;
-    let avgReturn = 0;
-    let profitItems = [];
+    window.sleep = (ms) => {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
-    items.forEach(item => {
+    window.calculateRTP = (cost, items) => {
 
-        const percentage = item.percentage;
-        const value = item.value;
+        let totalRtp = 0;
+        let totalPercentage = 0;
+        let profitPercentage = 0;
+        let avgReturn = 0;
+        let profitItems = [];
 
-        totalPercentage += percentage;
-        totalRtp += value * percentage;
+        items.forEach(item => {
 
-        console.log(value, percentage);
+            const percentage = item.percentage;
+            const value = item.value;
 
-        if (value >= cost) {
-            profitPercentage += percentage;
-            profitItems.push({ value, percentage });
+            totalPercentage += percentage;
+            totalRtp += value * percentage;
+
+            console.log(value, percentage);
+
+            if (value >= cost) {
+                profitPercentage += percentage;
+                profitItems.push({ value, percentage });
+            }
+
+        });
+
+        profitItems.forEach(item => {
+            avgReturn += item.value * ((item.percentage * 100 / profitPercentage) / 100);
+        });
+
+        const rtp = (totalRtp / cost) * 100;
+        totalPercentage = Math.round(totalPercentage);
+
+        return { rtp, totalPercentage, profitPercentage, avgReturn };
+
+    }
+
+    window.getItems = async (wrapperSelector, itemSelector) => {
+        let wrapper = document.querySelector(wrapperSelector);
+        let itemElems = null;
+
+        while (wrapper === null) {
+            wrapper = document.querySelector(wrapperSelector);
+            await sleep(10);
         }
 
-    });
+        while (itemElems === null) {
+            itemElems = wrapper.querySelectorAll(itemSelector);
+            await sleep(10);
+        }
 
-    profitItems.forEach(item => {
-        avgReturn += item.value * ((item.percentage * 100 / profitPercentage) / 100);
-    });
-
-    const rtp = (totalRtp / cost) * 100;
-    totalPercentage = Math.round(totalPercentage);
-
-    return { rtp, totalPercentage, profitPercentage, avgReturn };
-
-}
-
-window.getItems = async (wrapperSelector, itemSelector) => {
-    let wrapper = document.querySelector(wrapperSelector);
-    let itemElems = null;
-
-    while (wrapper === null) {
-        wrapper = document.querySelector(wrapperSelector);
-        await sleep(10);
+        return { wrapper, itemElems };
     }
-
-    while (itemElems === null) {
-        itemElems = wrapper.querySelectorAll(itemSelector);
-        await sleep(10);
-    }
-
-    return { wrapper, itemElems };
-}
+    
+})();
