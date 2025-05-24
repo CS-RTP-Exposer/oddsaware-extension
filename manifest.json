@@ -15,6 +15,19 @@
     "background": {
         "service_worker": "background.js"
     },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*.csgoroll.com/*",
+                "*://*.rain.gg/*",
+                "*://*.csgogem.com/*"
+            ],
+            "js": [
+                "content_router_watcher.js"
+            ],
+            "run_at": "document_idle"
+        }
+    ],
     "web_accessible_resources": [
         {
             "resources": [
