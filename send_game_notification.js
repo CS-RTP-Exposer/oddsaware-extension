@@ -1,3 +1,4 @@
 (() => {
+    window.removeGameNotification();
     window.sendSupportedGameNotification();
 })();

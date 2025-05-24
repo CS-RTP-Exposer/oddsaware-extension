@@ -11,14 +11,16 @@ const supportedSites = [
     "csgoroll.com",
     "rain.gg",
     "csgogem.com",
-    "google.com"
 ];
 
 chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
     const url = details.url;
+    let siteHit = false;
+    let gameHit = false;
 
     for (const site of supportedSites) {
         if (url.includes(site)) {
+            siteHit = true;
             console.log(`Supported site detected: ${site}`);
             chrome.scripting.executeScript({
                 target: { tabId: details.tabId },
@@ -30,16 +32,21 @@ chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
 
     for (const [urlPattern, scriptFile] of Object.entries(urlScriptMap)) {
         if (url.includes(urlPattern)) {
+            gameHit = true;
             chrome.scripting.executeScript({
                 target: { tabId: details.tabId },
                 files: ['utils.js', 'send_game_notification.js', scriptFile],
             });
-            return; // Stop checking after first match
+            break; // Stop checking after first match
         }
     }
 
+    if(!siteHit) return;
+    if(gameHit) return;
+
     console.log(`No matching game script found for URL: ${url}`);
     // no matching games found, remove any existing game notifications
+    
     chrome.scripting.executeScript({
             target: { tabId: details.tabId },
             files: ['utils.js', 'remove_game_notification.js'],
