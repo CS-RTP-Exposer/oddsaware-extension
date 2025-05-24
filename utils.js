@@ -67,7 +67,7 @@
         const body = document.querySelector('body');
         const logoUrl = chrome.runtime.getURL('public/oddsaware.svg');
 
-        if(document.getElementById('injected-notification-toast')) document.getElementById('injected-notification-toast').remove();
+        if (document.getElementById('injected-notification-toast')) document.getElementById('injected-notification-toast').remove();
 
         // Create toast container if it doesn't exist
         let container = document.getElementById('custom-toast-container');
@@ -151,7 +151,6 @@
         }, 30000);
     };
 
-    // SUPPORTED GAME NOTIFICATION
     window.sendSupportedGameNotification = () => {
         const body = document.querySelector('body');
         const logoUrl = chrome.runtime.getURL('public/oddsaware.svg');
@@ -175,7 +174,7 @@
         const toast = document.createElement('div');
         toast.id = 'supported-game-toast';
         toast.style.position = 'relative';
-        toast.style.padding = '15px 20px';
+        toast.style.padding = '15px 20px 25px 20px'; // extra bottom padding for progress bar
         toast.style.backgroundColor = 'rgba(139, 92, 246, 1)';
         toast.style.color = 'white';
         toast.style.borderRadius = '8px';
@@ -191,60 +190,114 @@
         toast.style.transition = 'all 0.3s ease';
 
         toast.innerHTML = `
-        <div class="toast-content" style="flex-grow: 1;">
-            <h5 style="display: flex; align-items: center; gap: 8px;">
-                <img src="${logoUrl}" alt="OddsAware Logo" style="height: 20px; width: 20px;" />
-                <span style="font-size: 16px;">OddsAware</span>
-            </h5>
-            <strong>Supported Game Detected!</strong>
-        </div>
-        <button type="button" class="collapse-btn" style="
-            background: none;
-            border: none;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            line-height: 1;
-            padding-left: 5px;
-        " title="Collapse">&#x25B2;</button>
-    `;
+            <div class="toast-content" style="flex-grow: 1;">
+                <h5 style="display: flex; align-items: center; gap: 8px;">
+                    <img src="${logoUrl}" alt="OddsAware Logo" style="height: 20px; width: 20px;" />
+                    <span style="font-size: 16px;">OddsAware</span>
+                </h5>
+                <strong>Supported Game Detected!</strong>
+            </div>
+            <button type="button" class="collapse-btn" style="
+                background: none;
+                border: none;
+                color: white;
+                font-size: 18px;
+                cursor: pointer;
+                line-height: 1;
+                padding-left: 5px;
+            " title="Collapse">&#x25B2;</button>
+            <div class="progress-bar" style="
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                height: 4px;
+                background-color: rgba(255, 255, 255, 0.7);
+                width: 100%;
+                border-radius: 0 0 8px 8px;
+                overflow: hidden;
+            ">
+                <div class="progress" style="
+                    background-color: white;
+                    height: 100%;
+                    width: 100%;
+                    transition: width 5s linear;
+                "></div>
+            </div>
+        `;
 
         const collapseBtn = toast.querySelector('.collapse-btn');
         const content = toast.querySelector('.toast-content');
+        const progress = toast.querySelector('.progress');
 
         let collapsed = false;
+
+        function collapseToast() {
+            if (collapsed) return;
+            collapsed = true;
+            // Collapse: hide content, shrink size, change icon
+            content.style.display = 'none';
+            toast.style.minWidth = 'unset';
+            toast.style.width = '40px';
+            toast.style.height = '40px';
+            toast.style.padding = '10px';
+            toast.style.justifyContent = 'center';
+            toast.style.alignItems = 'center';
+            toast.style.flowting = 'right';
+            collapseBtn.innerHTML = `<img src="${logoUrl}" alt="OddsAware Logo" style="height: 20px; width: 20px;" />`;
+            collapseBtn.title = "Expand";
+            collapseBtn.style.paddingLeft = '0';
+
+            // Hide progress bar on collapse
+            const progressBar = toast.querySelector('.progress-bar');
+            if (progressBar) progressBar.style.display = 'none';
+        }
 
         collapseBtn.onclick = () => {
             collapsed = !collapsed;
 
             if (collapsed) {
-                // Collapse: hide content, shrink size, change icon
-                content.style.display = 'none';
-                toast.style.minWidth = 'unset';
-                toast.style.width = '40px';
-                toast.style.height = '40px';
-                toast.style.padding = '10px';
-                toast.style.justifyContent = 'center';
-                toast.style.alignItems = 'center';
-                collapseBtn.innerHTML = `<img src="${logoUrl}" alt="OddsAware Logo" style="height: 20px; width: 20px;" />`;
-                collapseBtn.title = "Expand";
-                collapseBtn.style.paddingLeft = '0';
+                collapseToast();
             } else {
                 // Expand: restore content
                 content.style.display = 'block';
                 toast.style.minWidth = '350px';
                 toast.style.width = '';
                 toast.style.height = '';
-                toast.style.padding = '15px 20px';
+                toast.style.padding = '15px 20px 25px 20px'; // reset padding for progress bar
                 toast.style.justifyContent = 'space-between';
                 toast.style.alignItems = 'flex-start';
                 collapseBtn.innerHTML = '&#x25B2;';
                 collapseBtn.title = "Collapse";
+                collapseBtn.style.paddingLeft = '5px';
+
+                // Show and reset progress bar
+                const progressBar = toast.querySelector('.progress-bar');
+                if (progressBar) progressBar.style.display = 'block';
+                progress.style.width = '100%';
+
+                // Restart progress animation (trigger reflow)
+                void progress.offsetWidth;
+                progress.style.transition = 'width 5s linear';
+                progress.style.width = '0%';
+
+                // Auto collapse again after 5 seconds if expanded
+                setTimeout(collapseToast, 5000);
             }
         };
 
         container.appendChild(toast);
+
+        // Start the progress bar animation immediately
+        // from 100% width to 0% width over 5 seconds
+        setTimeout(() => {
+            progress.style.width = '0%';
+        }, 10);
+
+        // Auto collapse after 5 seconds
+        setTimeout(collapseToast, 5000);
     };
+
+
 
     // REMOVE GAME NOTIFICATION
     window.removeGameNotification = () => {
