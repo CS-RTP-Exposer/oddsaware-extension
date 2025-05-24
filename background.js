@@ -77,7 +77,7 @@ function handleNavigation(tabId, url) {
 
     chrome.scripting.executeScript({
         target: { tabId },
-        files: ['utils.js', 'remove_game_notification.js']
+        files: ['utils.js', 'notifications/remove_game_notification.js']
     });
 }
 
