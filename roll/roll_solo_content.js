@@ -2,6 +2,8 @@
 
     if (window.__CSGOROLL_SOLO_LOADED__) return;
     window.__CSGOROLL_SOLO_LOADED__ = true;
+    window.sendInjectedNotification();
+    window.sendSupportedGameNotification();
 
     if (!window.lastUrl) window.lastUrl = location.href;
 

@@ -7,6 +7,7 @@
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    // CALCULATE RTP
     window.calculateRTP = (cost, items) => {
 
         let totalRtp = 0;
@@ -43,6 +44,7 @@
 
     }
 
+    // GET ITEMS
     window.getItems = async (wrapperSelector, itemSelector) => {
         let wrapper = document.querySelector(wrapperSelector);
         let itemElems = null;
@@ -59,5 +61,141 @@
 
         return { wrapper, itemElems };
     }
-    
+
+    window.sendInjectedNotification = () => {
+        const body = document.querySelector('body');
+        const logoUrl = chrome.runtime.getURL('public/oddsaware.svg');
+
+        // Create toast container if it doesn't exist
+        let container = document.getElementById('custom-toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'custom-toast-container';
+            container.style.position = 'fixed';
+            container.style.top = '20px';
+            container.style.right = '20px';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.gap = '10px';
+            container.style.zIndex = '99999';
+            body.appendChild(container);
+        }
+
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.style.position = 'relative';
+        toast.style.padding = '15px 20px 25px'; // bottom padding for progress bar
+        toast.style.backgroundColor = 'rgba(139, 92, 246, 1)'; // Tailwind purple-500
+        toast.style.color = 'white';
+        toast.style.borderRadius = '8px';
+        toast.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+        toast.style.fontFamily = 'sans-serif';
+        toast.style.minWidth = '350px';
+        toast.style.maxWidth = '350px';
+        toast.style.display = 'flex';
+        toast.style.justifyContent = 'space-between';
+        toast.style.alignItems = 'center';
+        toast.style.gap = '12px';
+        toast.style.overflow = 'hidden';
+
+        toast.innerHTML = `
+            <div style="flex-grow: 1;">
+                <h5 style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <img src="${logoUrl}" alt="OddsAware Logo" style="height: 20px; width: 20px;" />
+                    <span style="font-size: 16px;">OddsAware</span>
+                </h5>
+                <strong>You have navigated to a supported site!</strong>
+                <p style="margin-top: 8px; margin-bottom: 8px;">Good for you, we will now automatically calculate your odds for the following games:</p>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li>CASE BATTLES</li>
+                    <li>UNBOXING</li>
+                </ul>
+            </div>
+            <button type="button" style="
+                background: none;
+                border: none;
+                color: white;
+                font-size: 18px;
+                cursor: pointer;
+                line-height: 1;
+            " aria-label="Close">&times;</button>`;
+
+        // Dismiss button functionality
+        toast.querySelector('button').onclick = () => toast.remove();
+
+        // Create progress bar
+        const progress = document.createElement('div');
+        progress.style.position = 'absolute';
+        progress.style.bottom = '0';
+        progress.style.left = '0';
+        progress.style.height = '4px';
+        progress.style.backgroundColor = 'rgba(255, 255, 255, 0.6)';
+        progress.style.width = '100%';
+        progress.style.transition = 'width 30s linear';
+
+        toast.appendChild(progress);
+        container.appendChild(toast);
+
+        // Animate the progress bar AFTER it is in the DOM
+        setTimeout(() => {
+            progress.style.width = '0%';
+        }, 50);
+
+        // Auto-dismiss after 30 seconds
+        setTimeout(() => {
+            toast.remove();
+        }, 30000);
+    };
+
+    window.sendSupportedGameNotification = () => {
+        const body = document.querySelector('body');
+        const logoUrl = chrome.runtime.getURL('public/oddsaware.svg');
+
+        // Create toast container if it doesn't exist
+        let container = document.getElementById('custom-toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'custom-toast-container';
+            container.style.position = 'fixed';
+            container.style.top = '20px';
+            container.style.right = '20px';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.gap = '10px';
+            container.style.zIndex = '99999';
+            body.appendChild(container);
+        }
+
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.style.position = 'relative';
+        toast.style.padding = '15px 20px'; // bottom padding for progress bar
+        toast.style.backgroundColor = 'rgba(139, 92, 246, 1)'; // Tailwind purple-500
+        toast.style.color = 'white';
+        toast.style.borderRadius = '8px';
+        toast.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+        toast.style.fontFamily = 'sans-serif';
+        toast.style.minWidth = '350px';
+        toast.style.display = 'flex';
+        toast.style.justifyContent = 'space-between';
+        toast.style.alignItems = 'center';
+        toast.style.gap = '12px';
+        toast.style.overflow = 'hidden';
+
+        toast.innerHTML = `
+            <div style="flex-grow: 1;">
+                <h5 style="display: flex; align-items: center; gap: 8px;">
+                    <img src="${logoUrl}" alt="OddsAware Logo" style="height: 20px; width: 20px;" />
+                    <span style="font-size: 16px;">OddsAware</span>
+                </h5>
+                <strong>Supported Game Detected!</strong>
+            </div>
+        `;
+
+        container.appendChild(toast);
+    }
+
+
+
+
 })();

@@ -1,18 +1,28 @@
 {
-  "manifest_version": 3,
-  "name": "CS:GO Gambling RTP Exposer",
-  "version": "1.0",
-  "permissions": [
-    "scripting",
-    "activeTab",
-    "webNavigation"
-  ],
-  "host_permissions": [
-    "https://www.csgoroll.com/*",
-    "https://rain.gg/*",
-    "https://csgogem.com/*"
-  ],
-  "background": {
-    "service_worker": "background.js"
-  }
+    "manifest_version": 3,
+    "name": "CS:GO Gambling RTP Exposer",
+    "version": "1.0",
+    "permissions": [
+        "scripting",
+        "activeTab",
+        "webNavigation"
+    ],
+    "host_permissions": [
+        "https://www.csgoroll.com/*",
+        "https://rain.gg/*",
+        "https://csgogem.com/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "public/oddsaware.svg"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ]
 }
