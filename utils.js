@@ -67,6 +67,8 @@
         const body = document.querySelector('body');
         const logoUrl = chrome.runtime.getURL('public/oddsaware.svg');
 
+        if(document.getElementById('injected-notification-toast')) document.getElementById('injected-notification-toast').remove();
+
         // Create toast container if it doesn't exist
         let container = document.getElementById('custom-toast-container');
         if (!container) {
@@ -84,6 +86,7 @@
 
         // Create toast element
         const toast = document.createElement('div');
+        toast.id = 'injected-notification-toast';
         toast.style.position = 'relative';
         toast.style.padding = '15px 20px 25px'; // bottom padding for progress bar
         toast.style.backgroundColor = 'rgba(139, 92, 246, 1)'; // Tailwind purple-500
@@ -170,6 +173,7 @@
 
         // Create toast element
         const toast = document.createElement('div');
+        toast.id = 'supported-game-toast';
         toast.style.position = 'relative';
         toast.style.padding = '15px 20px';
         toast.style.backgroundColor = 'rgba(139, 92, 246, 1)';
@@ -240,6 +244,12 @@
         };
 
         container.appendChild(toast);
+    };
+
+    // REMOVE GAME NOTIFICATION
+    window.removeGameNotification = () => {
+        const toast = document.getElementById('supported-game-toast');
+        if (toast) toast.remove();
     };
 
 
