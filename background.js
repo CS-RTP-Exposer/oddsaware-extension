@@ -47,7 +47,7 @@ function handleNavigation(tabId, url) {
             if (!siteState.notified) {
                 chrome.scripting.executeScript({
                     target: { tabId },
-                    files: ['utils.js', 'send_site_notification.js']
+                    files: ['utils.js', 'notifications/send_site_notification.js']
                 });
                 tabSiteState.set(tabId, { domain: currentDomain, notified: true });
             }
@@ -61,13 +61,13 @@ function handleNavigation(tabId, url) {
             if (!scriptFile) {
                 chrome.scripting.executeScript({
                     target: { tabId },
-                    files: ['utils.js', 'send_game_notification.js']
+                    files: ['utils.js', 'notifications/send_game_notification.js']
                 });
                 break;
             }
             chrome.scripting.executeScript({
                 target: { tabId },
-                files: ['utils.js', 'send_game_notification.js', scriptFile]
+                files: ['utils.js', 'notifications/send_game_notification.js', scriptFile]
             });
             break;
         }
