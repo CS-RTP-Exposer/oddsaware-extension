@@ -62,6 +62,7 @@
         return { wrapper, itemElems };
     }
 
+    // INJECTION NOTIFICATION
     window.sendInjectedNotification = () => {
         const body = document.querySelector('body');
         const logoUrl = chrome.runtime.getURL('public/oddsaware.svg');
@@ -72,7 +73,7 @@
             container = document.createElement('div');
             container.id = 'custom-toast-container';
             container.style.position = 'fixed';
-            container.style.top = '20px';
+            container.style.bottom = '20px';
             container.style.right = '20px';
             container.style.display = 'flex';
             container.style.flexDirection = 'column';
@@ -147,6 +148,7 @@
         }, 30000);
     };
 
+    // SUPPORTED GAME NOTIFICATION
     window.sendSupportedGameNotification = () => {
         const body = document.querySelector('body');
         const logoUrl = chrome.runtime.getURL('public/oddsaware.svg');
@@ -157,7 +159,7 @@
             container = document.createElement('div');
             container.id = 'custom-toast-container';
             container.style.position = 'fixed';
-            container.style.top = '20px';
+            container.style.bottom = '20px';
             container.style.right = '20px';
             container.style.display = 'flex';
             container.style.flexDirection = 'column';
@@ -169,31 +171,77 @@
         // Create toast element
         const toast = document.createElement('div');
         toast.style.position = 'relative';
-        toast.style.padding = '15px 20px'; // bottom padding for progress bar
-        toast.style.backgroundColor = 'rgba(139, 92, 246, 1)'; // Tailwind purple-500
+        toast.style.padding = '15px 20px';
+        toast.style.backgroundColor = 'rgba(139, 92, 246, 1)';
         toast.style.color = 'white';
         toast.style.borderRadius = '8px';
         toast.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
         toast.style.fontFamily = 'sans-serif';
         toast.style.minWidth = '350px';
+        toast.style.maxWidth = '400px';
         toast.style.display = 'flex';
         toast.style.justifyContent = 'space-between';
-        toast.style.alignItems = 'center';
+        toast.style.alignItems = 'flex-start';
         toast.style.gap = '12px';
         toast.style.overflow = 'hidden';
+        toast.style.transition = 'all 0.3s ease';
 
         toast.innerHTML = `
-            <div style="flex-grow: 1;">
-                <h5 style="display: flex; align-items: center; gap: 8px;">
-                    <img src="${logoUrl}" alt="OddsAware Logo" style="height: 20px; width: 20px;" />
-                    <span style="font-size: 16px;">OddsAware</span>
-                </h5>
-                <strong>Supported Game Detected!</strong>
-            </div>
-        `;
+        <div class="toast-content" style="flex-grow: 1;">
+            <h5 style="display: flex; align-items: center; gap: 8px;">
+                <img src="${logoUrl}" alt="OddsAware Logo" style="height: 20px; width: 20px;" />
+                <span style="font-size: 16px;">OddsAware</span>
+            </h5>
+            <strong>Supported Game Detected!</strong>
+        </div>
+        <button type="button" class="collapse-btn" style="
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            line-height: 1;
+            padding-left: 5px;
+        " title="Collapse">&#x25B2;</button>
+    `;
+
+        const collapseBtn = toast.querySelector('.collapse-btn');
+        const content = toast.querySelector('.toast-content');
+
+        let collapsed = false;
+
+        collapseBtn.onclick = () => {
+            collapsed = !collapsed;
+
+            if (collapsed) {
+                // Collapse: hide content, shrink size, change icon
+                content.style.display = 'none';
+                toast.style.minWidth = 'unset';
+                toast.style.width = '40px';
+                toast.style.height = '40px';
+                toast.style.padding = '10px';
+                toast.style.justifyContent = 'center';
+                toast.style.alignItems = 'center';
+                collapseBtn.innerHTML = `<img src="${logoUrl}" alt="OddsAware Logo" style="height: 20px; width: 20px;" />`;
+                collapseBtn.title = "Expand";
+                collapseBtn.style.paddingLeft = '0';
+            } else {
+                // Expand: restore content
+                content.style.display = 'block';
+                toast.style.minWidth = '350px';
+                toast.style.width = '';
+                toast.style.height = '';
+                toast.style.padding = '15px 20px';
+                toast.style.justifyContent = 'space-between';
+                toast.style.alignItems = 'flex-start';
+                collapseBtn.innerHTML = '&#x25B2;';
+                collapseBtn.title = "Collapse";
+            }
+        };
 
         container.appendChild(toast);
-    }
+    };
+
 
 
 
