@@ -40,35 +40,7 @@
         });
 
         const { rtp, totalPercentage, profitPercentage, avgReturn } = window.calculateRTP(cost, items);
-
-        const siblingElement = document.querySelector('#__nuxt > div > div > main > div.v-container.v-locale--is-ltr.py-8.page-content > div > div:nth-child(1)');
-        const existingRtp = siblingElement.querySelectorAll('.custom-rtp');
-        const existingProfit = siblingElement.querySelectorAll('.profit');
-
-        existingRtp.forEach(el => el.remove());
-        existingProfit.forEach(el => el.remove());
-
-        const rtpElement = document.createElement('div');
-        rtpElement.className = 'custom-rtp';
-        rtpElement.style.paddingLeft = '20px';
-        rtpElement.style.fontWeight = 'bold';
-        rtpElement.style.display = 'block';
-        rtpElement.style.flex = '0 0 100%';
-        rtpElement.style.color = totalPercentage !== 1 ? 'red' : rtp >= 100 ? 'green' : rtp >= 80 ? 'orange' : 'red';
-        rtpElement.innerText = totalPercentage !== 1 ? `Total percentage is not 100%` : `RTP: ${rtp.toFixed(2)}%`;
-
-        const profitElement = document.createElement('div');
-        profitElement.className = 'profit';
-        profitElement.style.paddingLeft = '20px';
-        profitElement.style.fontWeight = 'bold';
-        profitElement.style.display = 'block';
-        profitElement.style.flex = '0 0 100%';
-        profitElement.style.color = profitPercentage >= 0.5 ? 'green' : 'red';
-        profitElement.innerText = `Chance at profit: ${(profitPercentage * 100).toFixed(2)}% (avg. profit of ${(avgReturn / cost).toFixed(2)}x)`;
-
-        siblingElement.insertAdjacentElement('afterend', profitElement);
-        siblingElement.insertAdjacentElement('afterend', rtpElement);
-
+        window.sendOddsNotification(rtp, totalPercentage, profitPercentage, avgReturn, cost);
     }
 
     calculateRTP();

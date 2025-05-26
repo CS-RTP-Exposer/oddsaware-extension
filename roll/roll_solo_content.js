@@ -77,33 +77,6 @@
         });
 
         const { rtp, totalPercentage, profitPercentage, avgReturn } = window.calculateRTP(cost, items);
-
         window.sendOddsNotification(rtp, totalPercentage, profitPercentage, avgReturn, cost);
-
-        const siblingElement = document.querySelector('h4').parentElement;
-        const existingRtp = wrapper.querySelector('.custom-rtp');
-        const existingProfit = wrapper.querySelector('.profit');
-
-        if (existingRtp) existingRtp.remove();
-        if (existingProfit) existingProfit.remove();
-
-        const rtpElement = document.createElement('div');
-        rtpElement.className = 'custom-rtp';
-        rtpElement.style.marginTop = '8px';
-        rtpElement.style.fontWeight = 'bold';
-        rtpElement.style.color = totalPercentage !== 1 ? 'red' : rtp >= 100 ? 'green' : rtp >= 80 ? 'orange' : 'red';
-        rtpElement.innerText = totalPercentage !== 1
-            ? `Total percentage is not 100%`
-            : `RTP: ${rtp.toFixed(2)}%`;
-
-        const profitElement = document.createElement('div');
-        profitElement.className = 'profit';
-        profitElement.style.marginTop = '-8px';
-        profitElement.style.fontWeight = 'bold';
-        profitElement.style.color = profitPercentage >= 0.5 ? 'green' : 'red';
-        profitElement.innerText = `Chance at profit: ${(profitPercentage * 100).toFixed(2)}% (avg. profit of ${(avgReturn / cost).toFixed(2)}x)`;
-
-        siblingElement.insertAdjacentElement('afterend', profitElement);
-        siblingElement.insertAdjacentElement('afterend', rtpElement);
     }
 })();

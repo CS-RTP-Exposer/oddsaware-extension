@@ -25,33 +25,7 @@
             });
 
             const { rtp, totalPercentage, profitPercentage, avgReturn } = window.calculateRTP(cost, items);
-
-            //TODO: generalize way to display RTP and odds across sites
-            const siblingElement = wrapper.parentElement?.parentElement.parentElement.parentElement.parentElement.parentElement.querySelector('.v-card-title');
-            const existingRtp = siblingElement.querySelectorAll('.custom-rtp');
-            const existingProfit = siblingElement.querySelectorAll('.profit');
-            existingRtp.forEach(el => el.remove());
-            existingProfit.forEach(el => el.remove());
-
-            const rtpElement = document.createElement('div');
-            rtpElement.className = 'custom-rtp';
-            rtpElement.style.marginTop = '12px';
-            rtpElement.style.marginLeft = '24px';
-            rtpElement.style.fontWeight = 'bold';
-            rtpElement.style.display = 'block';
-            rtpElement.style.color = totalPercentage !== 1 ? 'red' : rtp >= 100 ? 'green' : rtp >= 80 ? 'orange' : 'red';
-            rtpElement.innerText = totalPercentage !== 1 ? `Total percentage is not 100%` : `RTP: ${rtp.toFixed(2)}%`;
-
-            const profitElement = document.createElement('div');
-            profitElement.className = 'profit';
-            profitElement.style.marginLeft = '24px';
-            profitElement.style.fontWeight = 'bold';
-            profitElement.style.display = 'block';
-            profitElement.style.color = profitPercentage >= 0.5 ? 'green' : 'red';
-            profitElement.innerText = `Chance at profit: ${(profitPercentage * 100).toFixed(2)}% (avg. profit of ${(avgReturn / cost).toFixed(2)}x)`;
-
-            siblingElement.insertAdjacentElement('afterend', profitElement);
-            siblingElement.insertAdjacentElement('afterend', rtpElement);
+            window.sendOddsNotification(rtp, totalPercentage, profitPercentage, avgReturn, cost);
 
         }
     }, true);

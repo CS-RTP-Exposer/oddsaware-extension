@@ -151,11 +151,11 @@
         }, 30000);
     };
 
+    // SEND SUPPORTED GAME NOTIFICATION
     window.sendSupportedGameNotification = () => {
         const body = document.querySelector('body');
         const logoUrl = chrome.runtime.getURL('public/oddsaware.svg');
 
-        // Create toast container if it doesn't exist
         let container = document.getElementById('custom-toast-container');
         if (!container) {
             container = document.createElement('div');
@@ -170,11 +170,10 @@
             body.appendChild(container);
         }
 
-        // Create toast element
         const toast = document.createElement('div');
         toast.id = 'supported-game-toast';
         toast.style.position = 'relative';
-        toast.style.padding = '15px 20px 25px 20px'; // extra bottom padding for progress bar
+        toast.style.padding = '15px 20px 25px 20px';
         toast.style.backgroundColor = 'rgba(139, 92, 246, 1)';
         toast.style.color = 'white';
         toast.style.borderRadius = '8px';
@@ -227,14 +226,14 @@
 
         const collapseBtn = toast.querySelector('.collapse-btn');
         const content = toast.querySelector('.toast-content');
+        const progressBar = toast.querySelector('.progress-bar');
         const progress = toast.querySelector('.progress');
 
         let collapsed = false;
+        let autoCollapseTimeout;
 
-        function collapseToast() {
-            if (collapsed) return;
+        const collapseToast = () => {
             collapsed = true;
-            // Collapse: hide content, shrink size, change icon
             content.style.display = 'none';
             toast.style.minWidth = 'unset';
             toast.style.width = '40px';
@@ -242,60 +241,57 @@
             toast.style.padding = '10px';
             toast.style.justifyContent = 'center';
             toast.style.alignItems = 'center';
-            toast.style.flowting = 'right';
-            collapseBtn.innerHTML = `<img src="${logoUrl}" alt="OddsAware Logo" style="height: 20px; width: 20px;" />`;
+            collapseBtn.innerHTML = `<img src="${logoUrl}" alt="Expand OddsAware" style="height: 20px; width: 20px;" />`;
             collapseBtn.title = "Expand";
             collapseBtn.style.paddingLeft = '0';
+            progressBar.style.display = 'none';
+        };
 
-            // Hide progress bar on collapse
-            const progressBar = toast.querySelector('.progress-bar');
-            if (progressBar) progressBar.style.display = 'none';
-        }
+        const expandToast = () => {
+            collapsed = false;
+            content.style.display = 'block';
+            toast.style.minWidth = '350px';
+            toast.style.width = '';
+            toast.style.height = '';
+            toast.style.padding = '15px 20px 25px 20px';
+            toast.style.justifyContent = 'space-between';
+            toast.style.alignItems = 'flex-start';
+            collapseBtn.innerHTML = '&#x25B2;';
+            collapseBtn.title = "Collapse";
+            collapseBtn.style.paddingLeft = '5px';
+            progressBar.style.display = 'block';
+
+            // Restart progress animation
+            progress.style.transition = 'none';
+            progress.style.width = '100%';
+            void progress.offsetWidth; // trigger reflow
+            progress.style.transition = 'width 5s linear';
+            progress.style.width = '0%';
+
+            // Cancel previous auto-collapse and set a new one
+            if (autoCollapseTimeout) clearTimeout(autoCollapseTimeout);
+            autoCollapseTimeout = setTimeout(collapseToast, 5000);
+        };
 
         collapseBtn.onclick = () => {
-            collapsed = !collapsed;
-
+            if (autoCollapseTimeout) clearTimeout(autoCollapseTimeout);
             if (collapsed) {
-                collapseToast();
+                expandToast();
             } else {
-                // Expand: restore content
-                content.style.display = 'block';
-                toast.style.minWidth = '350px';
-                toast.style.width = '';
-                toast.style.height = '';
-                toast.style.padding = '15px 20px 25px 20px'; // reset padding for progress bar
-                toast.style.justifyContent = 'space-between';
-                toast.style.alignItems = 'flex-start';
-                collapseBtn.innerHTML = '&#x25B2;';
-                collapseBtn.title = "Collapse";
-                collapseBtn.style.paddingLeft = '5px';
-
-                // Show and reset progress bar
-                const progressBar = toast.querySelector('.progress-bar');
-                if (progressBar) progressBar.style.display = 'block';
-                progress.style.width = '100%';
-
-                // Restart progress animation (trigger reflow)
-                void progress.offsetWidth;
-                progress.style.transition = 'width 5s linear';
-                progress.style.width = '0%';
-
-                // Auto collapse again after 5 seconds if expanded
-                setTimeout(collapseToast, 5000);
+                collapseToast();
             }
         };
 
         container.appendChild(toast);
 
-        // Start the progress bar animation immediately
-        // from 100% width to 0% width over 5 seconds
+        // Start progress bar and auto-collapse
         setTimeout(() => {
             progress.style.width = '0%';
         }, 10);
-
-        // Auto collapse after 5 seconds
-        setTimeout(collapseToast, 5000);
+        autoCollapseTimeout = setTimeout(collapseToast, 5000);
     };
+
+
 
 
 
@@ -311,30 +307,16 @@
         const body = document.querySelector('body');
         const logoUrl = chrome.runtime.getURL('public/oddsaware.svg');
 
-        // Create toast container if it doesn't exist
-        let container = document.getElementById('odds-toast-container');
         let toast = document.getElementById('odds-notification-toast');
+        if (toast) toast.remove();
 
-        if(toast) toast.remove();
-
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'odds-toast-container';
-            container.style.position = 'fixed';
-            container.style.bottom = '20px';
-            container.style.left = '50%';
-            container.style.transform = 'translateX(-50%)';
-            container.style.display = 'flex';
-            container.style.flexDirection = 'column';
-            container.style.gap = '10px';
-            container.style.zIndex = '99999';
-            body.appendChild(container);
-        }
-
-        // Create toast element
+        // Create toast element directly
         toast = document.createElement('div');
         toast.id = 'odds-notification-toast';
-        toast.style.position = 'relative';
+        toast.style.position = 'fixed';
+        toast.style.bottom = '20px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
         toast.style.padding = '15px 20px 25px';
         toast.style.backgroundColor = 'rgba(139, 92, 246, 1)';
         toast.style.color = 'white';
@@ -345,10 +327,13 @@
         toast.style.maxWidth = '350px';
         toast.style.display = 'flex';
         toast.style.justifyContent = 'space-between';
-        toast.style.alignItems = 'center';
+        toast.style.alignItems = 'flex-start';
         toast.style.gap = '12px';
         toast.style.overflow = 'hidden';
+        toast.style.cursor = 'move';
+        toast.style.zIndex = '100000';
 
+        // Inner content
         toast.innerHTML = `
             <div style="flex-grow: 1;">
                 <h5 style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
@@ -357,17 +342,62 @@
                 </h5>
                 <div class="custom-rtp" style="margin-top: 8px; font-weight: bold; color: white;">
                     ${totalPercentage !== 1
-                    ? `Total percentage is not 100%`
-                    : `Return To Player: ${rtp.toFixed(2)}%`}
+                ? `Total percentage is not 100%`
+                : `Return To Player: ${rtp.toFixed(2)}%`}
                 </div>
                 <div class="profit" style="font-weight: bold; color: white;">
                     Chance at profit: ${(profitPercentage * 100).toFixed(2)}% (avg. profit of ${(avgReturn / cost).toFixed(2)}x)
                 </div>
             </div>
+            <button id="close-toast-btn" style="
+                background: transparent;
+                border: none;
+                color: white;
+                font-size: 18px;
+                font-weight: bold;
+                cursor: pointer;
+                margin-left: 4px;
+                padding: 0;
+            " title="Close">&times;</button>
         `;
 
-        container.appendChild(toast);
+        body.appendChild(toast);
+
+        // Close button logic
+        toast.querySelector('#close-toast-btn').addEventListener('click', () => {
+            toast.remove();
+        });
+
+        // Drag logic
+        let isDragging = false;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        toast.addEventListener('mousedown', (e) => {
+            if (e.target.id === 'close-toast-btn') return; // don't start drag if clicking close button
+            isDragging = true;
+            const rect = toast.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            toast.style.transition = 'none';
+            toast.style.transform = 'none'; // stop centering on drag
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                toast.style.left = `${e.clientX - offsetX}px`;
+                toast.style.top = `${e.clientY - offsetY}px`;
+                toast.style.bottom = 'auto';
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
     };
+
+
+
 
     // REMOVE ODDS NOTIFICATION
     window.removeOddsNotification = () => {
