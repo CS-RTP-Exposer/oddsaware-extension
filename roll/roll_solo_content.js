@@ -78,6 +78,8 @@
 
         const { rtp, totalPercentage, profitPercentage, avgReturn } = window.calculateRTP(cost, items);
 
+        window.sendOddsNotification(rtp, totalPercentage, profitPercentage, avgReturn, cost);
+
         const siblingElement = document.querySelector('h4').parentElement;
         const existingRtp = wrapper.querySelector('.custom-rtp');
         const existingProfit = wrapper.querySelector('.profit');

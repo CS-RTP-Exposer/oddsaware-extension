@@ -23,6 +23,7 @@
                 "*://*.csgogem.com/*"
             ],
             "js": [
+                "utils.js",
                 "content_router_watcher.js"
             ],
             "run_at": "document_idle"

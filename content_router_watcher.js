@@ -7,6 +7,7 @@ function handleUrlChange(url) {
 // Wait for full load before initial notification
 window.addEventListener('load', () => {
   lastUrl = location.href;
+  window.removeOddsNotification();
   handleUrlChange(lastUrl);
 });
 
@@ -14,6 +15,7 @@ window.addEventListener('load', () => {
 const observer = new MutationObserver(() => {
   if (location.href !== lastUrl) {
     lastUrl = location.href;
+    window.removeOddsNotification();
     handleUrlChange(lastUrl);
   }
 });

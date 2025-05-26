@@ -306,7 +306,73 @@
     };
 
 
+    // SEND ODDS NOTIFICATION
+    window.sendOddsNotification = (rtp, totalPercentage, profitPercentage, avgReturn, cost) => {
+        const body = document.querySelector('body');
+        const logoUrl = chrome.runtime.getURL('public/oddsaware.svg');
 
+        // Create toast container if it doesn't exist
+        let container = document.getElementById('odds-toast-container');
+        let toast = document.getElementById('odds-notification-toast');
 
+        if(toast) toast.remove();
+
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'odds-toast-container';
+            container.style.position = 'fixed';
+            container.style.bottom = '20px';
+            container.style.left = '50%';
+            container.style.transform = 'translateX(-50%)';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.gap = '10px';
+            container.style.zIndex = '99999';
+            body.appendChild(container);
+        }
+
+        // Create toast element
+        toast = document.createElement('div');
+        toast.id = 'odds-notification-toast';
+        toast.style.position = 'relative';
+        toast.style.padding = '15px 20px 25px';
+        toast.style.backgroundColor = 'rgba(139, 92, 246, 1)';
+        toast.style.color = 'white';
+        toast.style.borderRadius = '8px';
+        toast.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+        toast.style.fontFamily = 'sans-serif';
+        toast.style.minWidth = '350px';
+        toast.style.maxWidth = '350px';
+        toast.style.display = 'flex';
+        toast.style.justifyContent = 'space-between';
+        toast.style.alignItems = 'center';
+        toast.style.gap = '12px';
+        toast.style.overflow = 'hidden';
+
+        toast.innerHTML = `
+            <div style="flex-grow: 1;">
+                <h5 style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <img src="${logoUrl}" alt="OddsAware Logo" style="height: 20px; width: 20px;" />
+                    <span style="font-size: 16px;">OddsAware</span>
+                </h5>
+                <div class="custom-rtp" style="margin-top: 8px; font-weight: bold; color: white;">
+                    ${totalPercentage !== 1
+                    ? `Total percentage is not 100%`
+                    : `Return To Player: ${rtp.toFixed(2)}%`}
+                </div>
+                <div class="profit" style="font-weight: bold; color: white;">
+                    Chance at profit: ${(profitPercentage * 100).toFixed(2)}% (avg. profit of ${(avgReturn / cost).toFixed(2)}x)
+                </div>
+            </div>
+        `;
+
+        container.appendChild(toast);
+    };
+
+    // REMOVE ODDS NOTIFICATION
+    window.removeOddsNotification = () => {
+        const toast = document.getElementById('odds-notification-toast');
+        if (toast) toast.remove();
+    };
 
 })();
