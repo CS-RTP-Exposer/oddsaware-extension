@@ -7,6 +7,7 @@ const urlScriptMap = {
     "https://csgogem.com/games/cases/": "gem/gem_solo_content.js",
     "https://csgoempire.com/cases": "empire/empire_solo_content.js",
     "https://csgoempire.com/case-battles/create": "empire/empire_content.js",
+    "https://csgoempire.com/case-battles": "", // No script needed for this URL
     "https://csgogem.com/games/cases": "", // No script needed for this URL
     "https://csgogem.com/games/battles": "" // No script needed for this URL
 };
