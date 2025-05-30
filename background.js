@@ -5,6 +5,8 @@ const urlScriptMap = {
     "rain.gg/games/case-opening": "rain/rain_solo_content.js",
     "https://csgogem.com/games/battles/": "gem/gem_content.js",
     "https://csgogem.com/games/cases/": "gem/gem_solo_content.js",
+    "https://csgoempire.com/cases": "empire/empire_solo_content.js",
+    "https://csgoempire.com/case-battles/create": "empire/empire_content.js",
     "https://csgogem.com/games/cases": "", // No script needed for this URL
     "https://csgogem.com/games/battles": "" // No script needed for this URL
 };
@@ -12,7 +14,8 @@ const urlScriptMap = {
 const supportedSites = [
     "csgoroll.com",
     "rain.gg",
-    "csgogem.com"
+    "csgogem.com",
+    "csgoempire.com"
 ];
 
 const tabSiteState = new Map();

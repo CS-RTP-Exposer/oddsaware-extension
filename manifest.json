@@ -10,7 +10,8 @@
     "host_permissions": [
         "https://www.csgoroll.com/*",
         "https://rain.gg/*",
-        "https://csgogem.com/*"
+        "https://csgogem.com/*",
+        "https://csgoempire.com/*"
     ],
     "background": {
         "service_worker": "background.js"
@@ -20,7 +21,8 @@
             "matches": [
                 "*://*.csgoroll.com/*",
                 "*://*.rain.gg/*",
-                "*://*.csgogem.com/*"
+                "*://*.csgogem.com/*",
+                "*://*.csgoempire.com/*"
             ],
             "js": [
                 "utils.js",
